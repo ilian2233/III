@@ -1,14 +1,14 @@
 package main
 
 import (
-	"III/tree"
+	"III/three"
 	"fmt"
 	"os"
 )
 
 func main() {
 
-	t := tree.CreateExampleTree()
+	t := three.CreateExampleTree()
 
 	fmt.Printf("Zad 4:\n\n")
 	fmt.Printf("The lowest val: %d\n", t.GetLowestVal())
