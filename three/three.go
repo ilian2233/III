@@ -1,14 +1,17 @@
-package tree
+package three
 
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
 )
 
 type three struct {
 	value int
-	left  *tree
-	right *tree
+	left  *three
+	right *three
 }
 
 func (t three) GetLowestVal() int {
@@ -134,8 +137,8 @@ func (t three) GetDepth() int {
 	return t.findDepth(0)
 }
 
-func CreateExampleThree() tree {
-	return three{
+func CreateExampleThree() *three {
+	return &three{
 		value: 9,
 		left: &three{
 			value: 6,
@@ -159,4 +162,52 @@ func CreateExampleThree() tree {
 			},
 		},
 	}
+}
+
+func (t *three) add(value int) *three {
+
+	//Handles nil pointer case
+	if t == nil {
+		return &three{value: value}
+	}
+
+	//Handles empty three case
+	if t.value == 0 && t.left == nil && t.right == nil {
+		t.value = value
+		return t
+	}
+
+	//Checks if value is smaller or bigger and adds it in the left or right recursively
+	if t.value > value {
+		t.left = t.left.add(value)
+	} else if t.value < value {
+		t.right = t.right.add(value)
+	}
+
+	//If value is equal doesn't add it
+	return t
+}
+
+func CreateThreeFromFile(filePath string) (*three, error) {
+
+	fileContent, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	values := strings.Split(string(fileContent), ",")
+
+	three := &three{}
+
+	for _, v := range values {
+
+		convertedValue, err := strconv.Atoi(v)
+		if err != nil {
+			return nil, err
+		}
+
+		three.add(convertedValue)
+	}
+
+	return three, nil
 }

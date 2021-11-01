@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	t := three.CreateExampleTree()
+	t := three.CreateExampleThree()
 
 	fmt.Printf("Zad 4:\n\n")
 	fmt.Printf("The lowest val: %d\n", t.GetLowestVal())
@@ -27,9 +27,18 @@ func main() {
 
 	fmt.Printf("\n\nZad 6:\n\n")
 	t.TreverseAndUpdate(10)
-	t.Traverse("Inorder")
+	t.Traverse(order)
 
 	fmt.Printf("\n\nZad 7:\n\n")
 	fmt.Printf("Depth: %d", t.GetDepth())
+
+	fmt.Printf("\n\nZad 8:\n\n")
+	filePath := "./three.txt"
+	three, err := three.CreateThreeFromFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Three loaded from file %v: \n", filePath)
+	three.Traverse(order)
 
 }
