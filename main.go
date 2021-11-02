@@ -1,14 +1,14 @@
 package main
 
 import (
-	"III/three"
+	"III/tree"
 	"fmt"
 	"os"
 )
 
 func main() {
 
-	t := three.CreateExampleThree()
+	t := tree.CreateExampleTree()
 
 	fmt.Printf("Zad 4:\n\n")
 	fmt.Printf("The lowest val: %d\n", t.GetLowestVal())
@@ -33,12 +33,12 @@ func main() {
 	fmt.Printf("Depth: %d", t.GetDepth())
 
 	fmt.Printf("\n\nZad 8:\n\n")
-	filePath := "./three.txt"
-	three, err := three.CreateThreeFromFile(filePath)
+	filePath := "./tree.txt"
+	tree, err := tree.CreateTreeFromFile(filePath)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("Three loaded from file %v: \n", filePath)
-	three.Traverse(order)
+	tree.Traverse(order)
 
 }

@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-type three struct {
+type tree struct {
 	value int
 	left  *three
 	right *three
 }
 
-func (t three) GetLowestVal() int {
+func (t tree) GetLowestVal() int {
 
 	branch := &t
 
@@ -25,7 +25,7 @@ func (t three) GetLowestVal() int {
 	return branch.value
 }
 
-func (t three) GetHighestVal() int {
+func (t tree) GetHighestVal() int {
 
 	branch := &t
 
@@ -36,7 +36,7 @@ func (t three) GetHighestVal() int {
 	return branch.value
 }
 
-func (t three) Traverse(mode string) error {
+func (t tree) Traverse(mode string) error {
 
 	fmt.Print(mode + ": ")
 
@@ -61,7 +61,7 @@ func (t three) Traverse(mode string) error {
 	}
 }
 
-func (t three) treverseInorder() {
+func (t tree) treverseInorder() {
 
 	if t.left != nil {
 		t.left.treverseInorder()
@@ -74,7 +74,7 @@ func (t three) treverseInorder() {
 	}
 }
 
-func (t three) treversePreorder() {
+func (t tree) treversePreorder() {
 
 	fmt.Printf("%d,", t.value)
 
@@ -87,7 +87,7 @@ func (t three) treversePreorder() {
 	}
 }
 
-func (t three) treversePostorder() {
+func (t tree) treversePostorder() {
 
 	if t.left != nil {
 		t.left.treversePostorder()
@@ -100,7 +100,7 @@ func (t three) treversePostorder() {
 	fmt.Printf("%d,", t.value)
 }
 
-func (t *three) TreverseAndUpdate(val int) {
+func (t *tree) TreverseAndUpdate(val int) {
 
 	if t.left != nil {
 		t.left.TreverseAndUpdate(val)
@@ -113,7 +113,7 @@ func (t *three) TreverseAndUpdate(val int) {
 	t.value = t.value + val
 }
 
-func (t three) findDepth(depth int) int {
+func (t tree) findDepth(depth int) int {
 
 	leftDepth, rightDepth := depth, depth
 
@@ -130,33 +130,32 @@ func (t three) findDepth(depth int) int {
 	} else {
 		return rightDepth
 	}
-
 }
 
-func (t three) GetDepth() int {
+func (t tree) GetDepth() int {
 	return t.findDepth(0)
 }
 
-func CreateExampleThree() *three {
-	return &three{
+func CreateExampleTree() *tree {
+	return &tree{
 		value: 9,
-		left: &three{
+		left: &tree{
 			value: 6,
-			left: &three{
+			left: &tree{
 				value: 4,
 			},
-			right: &three{
+			right: &tree{
 				value: 7,
 			},
 		},
-		right: &three{
+		right: &tree{
 			value: 16,
-			left: &three{
+			left: &tree{
 				value: 10,
 			},
-			right: &three{
+			right: &tree{
 				value: 19,
-				right: &three{
+				right: &tree{
 					value: 23,
 				},
 			},
@@ -164,11 +163,11 @@ func CreateExampleThree() *three {
 	}
 }
 
-func (t *three) add(value int) *three {
+func (t *tree) add(value int) *tree {
 
 	//Handles nil pointer case
 	if t == nil {
-		return &three{value: value}
+		return &tree{value: value}
 	}
 
 	//Handles empty three case
@@ -188,7 +187,7 @@ func (t *three) add(value int) *three {
 	return t
 }
 
-func CreateThreeFromFile(filePath string) (*three, error) {
+func CreateTreeFromFile(filePath string) (*tree, error) {
 
 	fileContent, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -197,7 +196,7 @@ func CreateThreeFromFile(filePath string) (*three, error) {
 
 	values := strings.Split(string(fileContent), ",")
 
-	three := &three{}
+	tree := &tree{}
 
 	for _, v := range values {
 
@@ -206,8 +205,8 @@ func CreateThreeFromFile(filePath string) (*three, error) {
 			return nil, err
 		}
 
-		three.add(convertedValue)
+		tree.add(convertedValue)
 	}
 
-	return three, nil
+	return tree, nil
 }
