@@ -1,4 +1,4 @@
-package three
+package tree
 
 import (
 	"errors"
@@ -10,8 +10,8 @@ import (
 
 type tree struct {
 	value int
-	left  *three
-	right *three
+	left  *tree
+	right *tree
 }
 
 func (t tree) GetLowestVal() int {
