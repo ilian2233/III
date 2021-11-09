@@ -26,7 +26,7 @@ func (dt *decimalToken) AddToToken(ch rune) error {
 	}
 
 	dt.val *= 10
-	dt.val += uint(ch)
+	dt.val += uint(ch - '0')
 
 	if dt.val > math.MaxInt32 {
 		return fmt.Errorf("int const too large")
@@ -124,8 +124,6 @@ func Parse1() {
 	p := coolerParser{}
 
 	a := "123;631;\"hello\".5678;\"course1\".\"end\"."
-
-	// a := "123;"
 
 	for _, v := range a {
 		err := p.AddSymbol(v)
