@@ -1,8 +1,9 @@
-package main
+package parser
 
 import (
 	"fmt"
 	"math"
+	"strings"
 	"unicode"
 )
 
@@ -16,13 +17,11 @@ type decimalToken struct {
 	complete bool
 }
 
-func (dt decimalToken) AddToToken(ch rune) error {
+func (dt *decimalToken) AddToToken(ch rune) error {
 
 	if ch == ';' {
 		dt.complete = true
-	}
-
-	if !unicode.IsDigit(ch) {
+	} else if !unicode.IsDigit(ch) {
 		return fmt.Errorf("rune not digit")
 	}
 
@@ -41,17 +40,19 @@ func (dt decimalToken) isComplete() bool {
 }
 
 type stringToken struct {
-	val      string
+	val      *strings.Builder
 	complete bool
 }
 
-func (st stringToken) AddToToken(ch rune) error {
+func (st *stringToken) AddToToken(ch rune) error {
 
 	if unicode.IsDigit(ch) || unicode.IsLetter(ch) || ch == '"' {
-		st.val += string(ch)
+		if _, err := st.val.WriteRune(ch); err != nil {
+			return err
+		}
 		return nil
 	} else if ch == '.' {
-		if st.val[len(st.val)-1] == '"' {
+		if st.val.String()[st.val.Len()-1] == '"' {
 			st.complete = true
 			return nil
 		} else {
@@ -69,13 +70,11 @@ type tokenCreator interface {
 	AddSymbol(ch string) error
 }
 
-type coolerParser struct {
-	tokens []token
-}
+type coolerParser []token
 
 func createNewToken(ch rune) (token, error) {
 	switch {
-	case unicode.IsDigit(ch):
+	case unicode.IsNumber(ch) || ch == ';':
 
 		dt := decimalToken{}
 
@@ -83,35 +82,37 @@ func createNewToken(ch rune) (token, error) {
 			return nil, err
 		}
 
-		return dt, nil
-	case ch == '"':
+		return &dt, nil
+	case unicode.IsLetter(ch) || ch == '"' || ch == '.':
 
-		st := stringToken{}
+		st := stringToken{val: &strings.Builder{}}
 
 		if err := st.AddToToken(ch); err != nil {
 			return nil, err
 		}
 
-		return st, nil
+		return &st, nil
 	default:
 		return nil, fmt.Errorf("no token starts with that character")
 	}
 }
 
-func (p coolerParser) AddSymbol(ch rune) error {
-	last := len(p.tokens) - 1
+func (p *coolerParser) AddSymbol(ch rune) error {
+	parser := *p
+	last := len(parser) - 1
 
 	//Checks if last token is complete or is nil
-	if p.tokens == nil || p.tokens[last] == nil || p.tokens[last].isComplete() {
+	if len(parser) < 1 || parser[last] == nil || parser[last].isComplete() {
 
 		newToken, err := createNewToken(ch)
 		if err != nil {
 			return err
 		}
-		p.tokens = append(p.tokens, newToken)
+		parser = append(parser, newToken)
+		*p = parser
 	} else {
 
-		err := p.tokens[last].AddToToken(ch)
+		err := parser[last].AddToToken(ch)
 		if err != nil {
 			return err
 		}
@@ -119,17 +120,21 @@ func (p coolerParser) AddSymbol(ch rune) error {
 	return nil
 }
 
-func main() {
+func Parse1() {
 	p := coolerParser{}
 
-	for _, v := range "123;631;\"hello\".5678;\"course1\".\"end\"." {
+	a := "123;631;\"hello\".5678;\"course1\".\"end\"."
+
+	// a := "123;"
+
+	for _, v := range a {
 		err := p.AddSymbol(v)
 		if err != nil {
-			return
+			fmt.Println(err)
 		}
 	}
 
-	for _, v := range p.tokens {
+	for _, v := range p {
 		fmt.Println(v)
 	}
 

@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"fmt"
@@ -61,6 +61,6 @@ func (p parser) IsValid() bool {
 	return err == nil
 }
 
-func main() {
+func Parse() {
 	fmt.Println(CreateParser("123;631;\"hello\".5678;\"course1\".\"end\".").IsValid())
 }
