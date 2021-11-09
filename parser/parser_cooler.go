@@ -18,7 +18,6 @@ type decimalToken struct {
 }
 
 func (dt *decimalToken) AddToToken(ch rune) error {
-
 	if ch == ';' {
 		dt.complete = true
 	} else if !unicode.IsDigit(ch) {
@@ -45,7 +44,6 @@ type stringToken struct {
 }
 
 func (st *stringToken) AddToToken(ch rune) error {
-
 	if unicode.IsDigit(ch) || unicode.IsLetter(ch) || ch == '"' {
 		if _, err := st.val.WriteRune(ch); err != nil {
 			return err
@@ -103,7 +101,6 @@ func (p *coolerParser) AddSymbol(ch rune) error {
 
 	//Checks if last token is complete or is nil
 	if len(parser) < 1 || parser[last] == nil || parser[last].isComplete() {
-
 		newToken, err := createNewToken(ch)
 		if err != nil {
 			return err
@@ -111,7 +108,6 @@ func (p *coolerParser) AddSymbol(ch rune) error {
 		parser = append(parser, newToken)
 		*p = parser
 	} else {
-
 		err := parser[last].AddToToken(ch)
 		if err != nil {
 			return err
@@ -131,7 +127,6 @@ func Parse1() {
 			fmt.Println(err)
 		}
 	}
-
 	for _, v := range p {
 		fmt.Println(v)
 	}

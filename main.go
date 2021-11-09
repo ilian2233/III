@@ -3,7 +3,6 @@ package main
 import "III/parser"
 
 func main() {
-
 	// t := tree.CreateExampleTree()
 
 	// fmt.Printf("Zad 4:\n\n")
@@ -38,5 +37,4 @@ func main() {
 	// tree.Traverse(order)
 
 	parser.Parse1()
-
 }
