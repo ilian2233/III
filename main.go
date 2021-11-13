@@ -1,6 +1,9 @@
 package main
 
-import "III/parser"
+import (
+	urlparser "III/url_parser"
+	"fmt"
+)
 
 func main() {
 	// t := tree.CreateExampleTree()
@@ -36,5 +39,11 @@ func main() {
 	// fmt.Printf("Three loaded from file %v: \n", filePath)
 	// tree.Traverse(order)
 
-	parser.Parse1()
+	//parser.Parse1()
+
+	err := urlparser.Parse("https://pkg.go.dev/golang.org/x/text/unicode/rangetable#New")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
