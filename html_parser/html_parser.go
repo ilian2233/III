@@ -9,10 +9,13 @@ import (
 
 type terminalSymbol rune
 
-//TODO: Test
 func readTag(input, tag string) (string, string, error) {
+
+	input = strings.TrimPrefix(input, " ")
+	input = strings.TrimSuffix(input, " ")
+
 	if !strings.HasPrefix(input, "<"+tag) {
-		return "", "", fmt.Errorf("misformed start of tag")
+		return "", "", fmt.Errorf("misformed start of tag %s", tag)
 	}
 	input = strings.TrimPrefix(input, "<"+tag)
 
@@ -22,7 +25,7 @@ func readTag(input, tag string) (string, string, error) {
 		return input, "", nil
 	}
 
-	closingTagPos := strings.IndexAny(input, ">")
+	closingTagPos := strings.Index(input, ">")
 	if closingTagPos == -1 {
 		return "", "", fmt.Errorf("unclosed open tag")
 	}
@@ -32,7 +35,7 @@ func readTag(input, tag string) (string, string, error) {
 	}
 	input = strings.TrimSuffix(input, "</"+tag+">")
 
-	return input[closingTagPos:], input[:closingTagPos], nil
+	return input[:closingTagPos],  input[closingTagPos+1:], nil
 }
 
 func a_attributes(input string) ([]terminalSymbol, error) {
@@ -209,31 +212,37 @@ func heading(input string) (symbols []terminalSymbol, err error) {
 }
 
 func html(input string) ([]terminalSymbol, error) {
-	inputArr := strings.SplitN(input, " ", 2)
+	inputArr := strings.Split(input, " ")
 
-	itemSymbols, err := item(inputArr[0])
-	if err != nil{
-		return nil, err
+	var symbols []terminalSymbol
+
+	for _,v := range inputArr {
+		itemSymbols, err := item(v)
+		if err != nil {
+			return nil, err
+		}
+
+		symbols = append(symbols, itemSymbols...)
 	}
 
-	htmlSymbols, err := html(inputArr[1])
-	if err != nil{
-		return nil, err
-	}
-
-	return append(itemSymbols,htmlSymbols...), nil
+	return symbols, nil
 }
 
 func html_document(input string) ([]terminalSymbol, error) {
 
-	endOfHead := strings.IndexAny(input, "</head>")
-
-	headSymbols, err := head(input[:endOfHead])
+	_, html_body, err := readTag(input, "html")
 	if err != nil{
 		return nil, err
 	}
 
-	bodySymbols, err := body(input[endOfHead:])
+	endOfHead := strings.Index(html_body, "</head>")+7
+
+	headSymbols, err := head(html_body[:endOfHead])
+	if err != nil{
+		return nil, err
+	}
+
+	bodySymbols, err := body(html_body[endOfHead:])
 	if err != nil{
 		return nil, err
 	}
