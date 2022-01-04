@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to Run a Single Test &middot; GolangCode</title>
+    <meta name="description" content="A Library of Go Snippets">
+
+    <link rel="canonical" href="https://golangcode.com/run-one-test/" />
+    <link rel="dns-prefetch" href="//code.jquery.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/fav/safari-pinned-tab.svg" color="#28a57c">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="GolangCode">
+    <meta name="application-name" content="GolangCode">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/fav/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="flattr:id" content="1zng2e">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Mono&family=Lato:wght@400;700&family=Merriweather:wght@400;700&display=swap">
+    
+    <link rel="stylesheet" href="https://golangcode.com/scss/main.min.d0ea85b404783eed4b97b668b4b0bd6c17816dfb292a11dbaafcb121b76d658e.css" integrity="sha256-0OqFtAR4Pu1Ll7ZotLC9bBeBbfspKhHbqvyxIbdtZY4=">
+    <link rel="alternate" type="application/rss+xml" href="https://golangcode.com/index.xml" title="GolangCode" />
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Go has a simple command line for running its tests, with go test. However, often when writing tests you don&rsquo;t care about the rest of the test suite - you just want to run your new test. This post shows you the command you need to run just your test, as well as a full example below.">
+    <meta name="twitter:title" content="How to Run a Single Test - GolangCode">
+    <meta name="twitter:site" content="@golangcode">
+    <meta name="twitter:creator" content="@golangcode">
+    <meta name="twitter:image" content="https://golangcode.com/img/2019/single-test.png">
+
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How to Run a Single Test - GolangCode">
+    <meta property="og:description" content="Go has a simple command line for running its tests, with go test. However, often when writing tests you don&rsquo;t care about the rest of the test suite - you just want to run your new test. This post shows you the command you need to run just your test, as well as a full example below.">
+    <meta property="og:url" content="https://golangcode.com/run-one-test/">
+    <meta property="og:site_name" content="GolangCode">
+    
+    <meta property="og:image" content="https://golangcode.com/img/2019/single-test.png">
+    <meta property="og:image:secure_url" content="https://golangcode.com/img/2019/single-test.png">
+    
+    <meta property="article:section" content="Uncategorized" />
+    <meta property="article:published_time" content="2019-09-24T18:20:00Z" />
+
+    <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "How to Run a Single Test",
+        "image": "https://golangcode.com/2019/single-test.png",
+        "genre": "Uncategorized",
+        "wordcount":  228 ,
+        "url": "https://golangcode.com/run-one-test/",
+        "datePublished": "2019-09-24T18:20:00Z",
+        "description": "\u003cp\u003eGo has a simple command line for running its tests, with \u003ccode\u003ego test\u003c/code\u003e. However, often when writing tests you don\u0026rsquo;t care about the rest of the test suite - you just want to run your new test. This post shows you the command you need to run just your test, as well as a full example below.\u003c/p\u003e",
+        "author": {
+            "@type": "Person",
+            "name": "Edd Turtle"
+        },
+        "keywords": "test,single,verbose,run,testing,command,suite,example",
+        "publisher": {
+            "@type": "Organization",
+            "name": "GolangCode.com",
+            "logo": {
+                "@type": "ImageObject",
+                "width": "256",
+                "height": "256",
+                "url": "https://golangcode.com/fav/android-chrome-256x256.png"
+            }
+        }
+    }
+    </script>
+    <script type="text/javascript" src="//thisiswaldo.com/static/golangcode.php"></script>
+</head>
+
+<body>
+   
+
+
+<div class="pre-nav-header">
+	<a href='https://golangcode.com/'>
+    	<img id="avatar" src="https://golangcode.com/logo.svg" height="44" width="62" alt="Golang Gopher logo" />
+		Golang Code
+	</a>
+</div>
+
+
+<nav class="main-nav" role="navigation">
+	
+		<a href='https://golangcode.com/' class="main-nav-home-link">
+			<i class="icon-left"></i>&nbsp;
+			Home
+		</a>
+	
+	
+	<a href="https://golangcode.com/tags" class="nav-tags-button">
+		Tags
+	</a>
+	<a href='https://golangcode.com/about'>
+		About
+	</a>
+
+	
+
+	
+		<a class="nav-subscribe-button js-nav-subscribe-button" href="https://golangcode.com/index.xml">
+			<i class="icon-rss"></i>&nbsp;
+			RSS
+		</a>
+	
+
+	<a href='https://golangcode.com/search' class="cta js-nav-search-button">
+		<i class="icon-search"></i>&nbsp;
+		Search
+	</a>
+</nav>
+
+
+
+
+    <section id="wrapper" role="main">
+
+        
+<form action="https://golangcode.com/search/" class="search-form closed">
+    <input type="text" 
+           id="search-query" 
+           name="s" 
+           placeholder="e.g. &nbsp;Middleware, &nbsp;Buffer, &nbsp;Install Go...">
+    <button>Search</button>
+</form>
+
+         <div style="text-align: center; margin-bottom: 20px;"><div id="waldo-tag-8645"></div></div>
+
+        <article class="post">
+            <header>
+
+                
+                    
+                    <h1>How to Run a Single Test</h1>
+                
+
+
+                
+                    <h2 class="headline">
+                        <div>
+                            <time datetime="2019-09-24T18:20:00&#43;0000" title="2019-09-24T18:20:00&#43;0000">
+                                Sep 24, 2019
+                            </time>
+                            &middot;
+                            <span class="word-count">
+                                228 words
+                            </span>
+                            &middot;
+                            <span class="reading-time">
+                                2 minutes read
+                            </span>
+                        </div>
+                        <div class="tags">
+                            
+                                
+                                    
+                                        <a href="https://golangcode.com/tags/test">#test</a>
+                                    
+                                        <a href="https://golangcode.com/tags/single">#single</a>
+                                    
+                                        <a href="https://golangcode.com/tags/verbose">#verbose</a>
+                                    
+                                        <a href="https://golangcode.com/tags/run">#run</a>
+                                    
+                                        <a href="https://golangcode.com/tags/testing">#testing</a>
+                                    
+                                        <a href="https://golangcode.com/tags/command">#command</a>
+                                    
+                                        <a href="https://golangcode.com/tags/suite">#suite</a>
+                                    
+                                        <a href="https://golangcode.com/tags/example">#example</a>
+                                    
+                                
+                            
+                        </div>
+                    </h2>
+                
+            </header>
+
+            <section id="post-body">
+                <div style="text-align: center; margin: 10px 0;">
+                    <div id="waldo-tag-8649"></div>
+                </div>
+                
+                    <p>Go has a simple command line for running its tests, with <code>go test</code>. However, often when writing tests you don&rsquo;t care about the rest of the test suite - you just want to run your new test. This post shows you the command you need to run just your test, as well as a full example below.</p>
+                    
+                
+                    
+<h3 id="tldr-use--run">TL;DR: use -run</h3>
+<pre tabindex="0"><code>go test -run TestSub
+</code></pre><h3 id="example">Example:</h3>
+<p>main.go</p>
+                    
+                
+                    
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;add: %d\n&#34;</span><span class="p">,</span> <span class="nf">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;sub: %d\n&#34;</span><span class="p">,</span> <span class="nf">sub</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">num1</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">num2</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">num1</span> <span class="o">+</span> <span class="nx">num2</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">sub</span><span class="p">(</span><span class="nx">num1</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">num2</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">num1</span> <span class="o">-</span> <span class="nx">num2</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>main_test.go</p>
+                    
+                        <div style="text-align: center; margin: 10px 0;">
+                            <div id="waldo-tag-8648"></div>
+                        </div>
+
+                        <div style="max-width: 500px; text-align: center; margin-left: auto; margin-right: auto;">
+                            <div id='waldo-tag-8751'>
+                             <script>
+                               googletag.cmd.push(function() { googletag.display('waldo-tag-8751'); });
+                             </script>
+                            </div>
+                        </div>
+                    
+                
+                    
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;testing&#34;</span>
+
+<span class="kd">func</span> <span class="nf">TestAdd</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">result</span> <span class="o">:=</span> <span class="nf">add</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="nx">expected</span> <span class="o">:=</span> <span class="mi">6</span>
+    <span class="k">if</span> <span class="nx">result</span> <span class="o">!=</span> <span class="nx">expected</span> <span class="p">{</span>
+        <span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;add() test returned an unexpected result: got %v want %v&#34;</span><span class="p">,</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">expected</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">TestSub</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">result</span> <span class="o">:=</span> <span class="nf">sub</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="nx">expected</span> <span class="o">:=</span> <span class="o">-</span><span class="mi">2</span>
+    <span class="k">if</span> <span class="nx">result</span> <span class="o">!=</span> <span class="nx">expected</span> <span class="p">{</span>
+        <span class="nx">t</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;sub() test returned an unexpected result: got %v want %v&#34;</span><span class="p">,</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">expected</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Command: (We are running with the <code>-v</code> parameter so we can see which tests have been run.)</p>
+                    
+                
+                    
+<pre tabindex="0"><code>go test -v -run TestSub
+</code></pre><p><img src="/img/2019/single-test.png" alt="running a single golang test"></p>
+                    
+                
+                    </p>
+                    
+                
+                
+                
+                <div style="text-align: center; margin: 10px 0;"><div id="waldo-tag-8646"></div></div>
+            </section>
+        </article>
+
+        
+            
+            
+                
+            
+
+            
+            
+            
+                <div class="related-content">
+                    <h3>Related Posts</h3>
+                    <ul>
+                        
+                            
+                            <li>
+                                <a href="/mocking-s3-upload/">
+                                    Mock S3 Uploads in Go Tests
+                                </a>
+                                &ndash; 
+                                <time datetime="2020-02-22T10:00:00&#43;0000">
+                                    Feb 22, 2020
+                                </time>
+                                <br> 
+                                <small>A common scenario a back-end web developer might encounter is writing code which uploads a file to an external storage platform, like S3 or Azure. This is simple enough, but writing tests for this code which are isolated from the dependencies isn’t quite as straight forward. We can achieve this in Go through the use of interfaces and creating a “mock” uploader when our tests run.
+Below we’ve build an example to show this, first showing the test and then the code it’s testing.</small>
+                            </li>
+                        
+                            <li>
+                                <a href="/go-get-all-packages/">
+                                    Go Get: Install All Packages
+                                </a>
+                                &ndash; 
+                                <time datetime="2019-06-07T11:00:00&#43;0000">
+                                    Jun 7, 2019
+                                </time>
+                                <br> 
+                                <small>Go has a simple built in way to download packages. If you’ve programmed in Go, you’ve likely used the go get command before (view docs). It often works something like this:
+go get -u github.com/gorilla/mux
+Which is great - but! What if you want to download all the packages linked to your project? This commonly happens if you pull a new project down using version control and don’t want to go get each package individually.</small>
+                            </li>
+                        
+                            <li>
+                                <a href="/disable-log-output-during-tests/">
+                                    Disable Log Output During Tests
+                                </a>
+                                &ndash; 
+                                <time datetime="2019-01-14T20:20:00&#43;0000">
+                                    Jan 14, 2019
+                                </time>
+                                <br> 
+                                <small>It’s quite common to use the log package within your code to keep track of things which the end user might not need to see, like deprecated notices and warnings. These are great when they are in production and you are monitoring the logs - but they will show up during your tests.
+Below is an example test for our example application (even further below) which just asserts that the result of the function is 5.</small>
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+
+            <i class="icon-ellipsis page-separator" aria-hidden="true"></i>
+
+            
+<div class="about-area">
+    <img src="/images/author-edd-v2-100.jpg" 
+         srcset="/images/author-edd-v2-100@2x.jpg 2x"
+         alt="Image of Author Edd Turtle" 
+         width="80" 
+         height="80">
+    <a href="https://twitter.com/eddturtle" class="twitter-follow-button" data-lang="en" data-dnt="true" data-show-count="false">
+        Follow @EddTurtle
+    </a>
+    <a href="https://twitter.com/golangcode" class="twitter-follow-button" data-lang="en" data-dnt="true" data-show-count="false">
+        Follow @golangcode
+    </a>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="dontate-button">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+        ">
+        <input type="image" src="/images/btn_donate_SM.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online!">
+    </form>
+    <h3>Author:&nbsp; Edd Turtle</h3>
+    <p>Edd is the Lead Developer at Hoowla, a prop-tech startup, where he spends much of his time working on production-ready Go and PHP code. He loves coding, but also enjoys cycling and camping in his spare time.</p>
+</div>
+
+            <p>See something which isn't right? You can contribute to this page <a href="https://github.com/eddturtle/golangcode-site" target="_blank">on GitHub</a> or just let us know in the comments below - Thanks for reading!</p>
+
+            
+                
+
+<div id="disqus_thread" data-shortname="golangcode">
+	<div class="search-loader show-by-default">
+	    <div class="loader"></div>
+	</div>
+</div>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            
+        
+
+        <footer id="footer" role="contentinfo">
+    
+        <div id="social">
+	<a class="symbol" href="https://github.com/eddturtle/golangcode-site" aria-label="github button"><i class="icon-github-squared"></i></a><a class="symbol" href="/index.xml" aria-label="rss button"><i class="icon-rss-squared"></i></a><a class="symbol" href="https://twitter.com/golangcode" aria-label="twitter button"><i class="icon-twitter-squared"></i></a>
+</div>
+
+    
+    <p class="small">
+      Code shown Licenced under <a href="https://github.com/eddturtle/golangcode-site/blob/master/LICENSE">MIT Licence</a> 
+      &nbsp;&middot;&nbsp; 
+      <a href="/privacy">Privacy Policy</a>
+    </p>
+    <p class="small">
+    
+       © Copyright 2021 
+       &nbsp;
+       <i class="icon-heart" aria-hidden="true"></i> 
+       &nbsp;
+       <a href="https://www.designedbyaturtle.co.uk/">Designed by a Turtle</a>
+    
+    </p>
+</footer>
+
+<div id="waldo-tag-8647"></div>
+
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="https:\/\/golangcode.com\/js/jquery-3.5.1.slim.min.js"><\/script>');</script>
+
+
+<script>
+    window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+    ga('create','UA-65854395-1','auto');ga('send','pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+<script src="https://golangcode.com/js/clipboard-2.0.6.min.js"></script>
+
+<script src="https://golangcode.com/js/main.min.796a013f106427ff7e0157a3a83685fd6b8155d4be0c3b04cf7d498f85d65921.js"></script>
+
+
+
+
+
+<script src="https://platform.twitter.com/widgets.js" crossorigin="anonymous" async defer charset="utf-8"></script>
+
+
+</body>
+</html>

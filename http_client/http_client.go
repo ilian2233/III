@@ -1,6 +1,7 @@
 package http_client
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,10 +11,16 @@ import (
 	"strings"
 )
 
-func VisitURL(fileURLAddress string) error {
+func VisitURL() error {
+
+	reader := bufio.NewReader(os.Stdin)
+	fileURLAddress, err := reader.ReadString('\n')
+	if err != nil {
+		return err
+	}
 
 	// Build fileName from fullPath
-	fileURL, err := url.Parse(fileURLAddress)
+	fileURL, err := url.Parse(fileURLAddress[:len(fileURLAddress)-1])
 	if err != nil {
 		return err
 	}
@@ -21,13 +28,13 @@ func VisitURL(fileURLAddress string) error {
 	fileName := segments[len(segments)-1]
 
 	// Create blank file
-	file, err := os.Create(fileName)
+	file, err := os.Create("Html_from_url")
 	if err != nil {
 		return err
 	}
 
 	// Gets file from internet
-	resp, err := http.Get(fileURLAddress)
+	resp, err := http.Get(fileURLAddress[:len(fileURLAddress)-1])
 	if err != nil {
 		return err
 	}

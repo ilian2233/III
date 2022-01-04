@@ -1,7 +1,7 @@
 package main
 
 import (
-	urlparser "III/url_parser"
+	"III/http_client"
 	"fmt"
 )
 
@@ -41,7 +41,13 @@ func main() {
 
 	//parser.Parse1()
 
-	err := urlparser.Parse("https://pkg.go.dev/golang.org/x/text/unicode/rangetable#New")
+	// err := urlparser.Parse("https://pkg.go.dev/golang.org/x/text/unicode/rangetable#New")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+
+	err := http_client.VisitURL()
 	if err != nil {
 		fmt.Println(err)
 		return
